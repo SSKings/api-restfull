@@ -55,4 +55,16 @@ public class ClienteController {
         clienteService.deletar(optionalCliente.get());
         return ResponseEntity.status(HttpStatus.OK).body("cliente deletado");
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> atualizarCliente(@PathVariable(value = "id") long clienteId,
+                                                   @RequestBody @Valid ClienteDto clienteDto){
+        Optional<ClienteModel> optionalCliente = clienteService.buscar(clienteId);
+        if (!optionalCliente.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("não encontrado");
+        }
+        var clienteModel = new ClienteModel();
+        BeanUtils.copyProperties(clienteDto,clienteModel);
+        clienteModel.setId(optionalCliente.get().getId());
+        return ResponseEntity.status(HttpStatus.OK).body(clienteService.save(clienteModel)q);
+    }
 }
